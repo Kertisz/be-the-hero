@@ -5,7 +5,7 @@ module.exports = {
         const {page = 1} = request.query;
         
        // const [count] = await (await connection('incidents')).count();
-    const [count] = await connection('incidents').count();
+        const [count] = await connection('incidents').count();
 
     //console.log(count);
 
@@ -15,10 +15,11 @@ module.exports = {
         .offset((page - 1)* 5)
         .select(['incidents.*', 
         'ongs.name',
-         'ongs.email',
-          'ongs.whatsapp',
-           'ongs.city',
-            'ongs.uf']);
+        'ongs.email',
+        'ongs.whatsapp',
+        'ongs.city',
+        'ongs.uf',
+    ]);
 
         //quantidade de registros
         response.header('X-Total-Count', count ['count(*)']);
@@ -42,12 +43,12 @@ module.exports = {
         const {id} = request.params;
         const ong_id = request.headers.authorization;
 
-        const incident = await connection('ongs')
+        const incidents = await connection('incidents')
         .where('id', id)
         .select('ong_id')
         .first();
 
-        if(incident.ong_id !== ong_id){
+        if(incidents.ong_id !== ong_id){
             return response.status(401).json({erro: 'Operation not authorization. '});
 
         }await connection('incidents').where('id', id).delete();
